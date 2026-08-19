@@ -1,0 +1,33 @@
+{
+  "name": "app",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "playwright test",
+    "test:headed": "playwright test --headed",
+    "test:ui": "playwright test --ui",
+    "report": "playwright show-report"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bmifsud/Evernote_demo.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/bmifsud/Evernote_demo/issues"
+  },
+  "homepage": "https://github.com/bmifsud/Evernote_demo#readme",
+  "devDependencies": {
+    "@playwright/test": "^1.62.1",
+    "@types/node": "^26.2.0",
+    "dotenv": "^17.4.2",
+    "eslint": "^10.8.1",
+    "eslint-plugin-playwright": "^2.11.0",
+    "typescript": "^5.4.5",
+    "typescript-eslint": "^8.67.0"
+  }
+}
