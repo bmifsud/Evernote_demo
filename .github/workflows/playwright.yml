@@ -13,11 +13,6 @@ jobs:
     timeout-minutes: 30
     runs-on: ubuntu-latest
 
-    env:
-      BASE_URL: ${{ secrets.BASE_URL }}
-      EVERNOTE_VALID_EMAIL: ${{ secrets.EVERNOTE_VALID_EMAIL }}
-      EVERNOTE_VALID_PASSWORD: ${{ secrets.EVERNOTE_VALID_PASSWORD }}
-
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
@@ -36,6 +31,10 @@ jobs:
 
       - name: Execute Playwright Tests
         run: npx playwright test
+        env:
+          BASE_URL: ${{ secrets.BASE_URL }}
+          EVERNOTE_USER: ${{ secrets.EVERNOTE_USER }}
+          EVERNOTE_PASSWORD: ${{ secrets.EVERNOTE_PASSWORD }}
 
       - name: Upload Playwright Test Report
         uses: actions/upload-artifact@v4
