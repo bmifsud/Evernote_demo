@@ -19,7 +19,7 @@ export class LoginPage extends BasePage {
 
   async goto(): Promise<void> {
     await this.page.goto('/Login.action');
-    await this.waitForPageLoad();
+    await this.waitForPageLoad(this.emailInput);
   }
 
   async enterEmail(email: string): Promise<void> {

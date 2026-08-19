@@ -13,7 +13,7 @@ export class NotesPage extends BasePage {
     super(page);
     this.createNoteButton = page.locator('[data-testid="sidebar-new-note-btn"], button#qa-CREATE_NOTE');
     this.noteTitleInput = page.locator('[placeholder="Title"], textarea[aria-label="Note title"]');
-    this.noteEditorBody = page.locator('div[contenteditable="true"], #en-note editor');
+    this.noteEditorBody = page.locator('div[contenteditable="true"], #en-note [contenteditable="true"], #en-note-editor');
     this.noteCardItems = page.locator('[data-testid="note-card"], .note-list-item');
     this.userProfileMenu = page.locator('[data-testid="user-profile-menu"], #qa-NAV_USER');
     this.logoutButton = page.locator('button:has-text("Log out"), [data-testid="logout-btn"]');

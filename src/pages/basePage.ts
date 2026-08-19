@@ -7,7 +7,13 @@ export class BasePage {
     this.page = page;
   }
 
-  async waitForPageLoad(): Promise<void> {
-    await this.page.waitForLoadState('networkidle');
+  async waitForPageLoad(readyElement?: Locator): Promise<void> {
+    // Prefer `load` to avoid flakiness with long-lived network connections
+    await this.page.waitForLoadState('load');
+
+    // Optionally wait for a meaningful, stable UI element to signal readiness
+    if (readyElement) {
+      await readyElement.waitFor({ state: 'visible' });
+    }
   }
 }
