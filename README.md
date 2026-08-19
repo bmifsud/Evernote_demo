@@ -33,8 +33,8 @@ A production-grade TypeScript test automation framework built with Playwright fo
    Edit `.env` with valid credentials:
    \`\`\`env
    BASE_URL=https://www.evernote.com
-   EVERNOTE_VALID_EMAIL=your_test_email@example.com
-   EVERNOTE_VALID_PASSWORD=your_secure_password
+   EVERNOTE_VALID_EMAIL=bernard.mifsud@gmail.com
+   EVERNOTE_VALID_PASSWORD=q~Wk%R/XPNy~6<j
    \`\`\`
 
 ## 🧪 Running Tests Locally
