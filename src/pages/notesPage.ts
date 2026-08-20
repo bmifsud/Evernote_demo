@@ -11,19 +11,19 @@ export class NotesPage extends BasePage {
 
   constructor(page: Page) {
     super(page);
-    // Expand locators for new note button
-    this.createNoteButton = page.locator('[data-testid="sidebar-new-note-btn"], button#qa-CREATE_NOTE, button:has-text("New Note"), button:has-text("New")');
-    this.noteTitleInput = page.locator('[placeholder="Title"], textarea[aria-label="Note title"]');
-    this.noteEditorBody = page.locator('div[contenteditable="true"], #en-note [contenteditable="true"], #en-note-editor');
+    // Ensure we're targeting the active editor when there are multiple (e.g. if previous pages didn't clean up)
+    this.createNoteButton = page.locator('[data-testid="sidebar-new-note-btn"], button#qa-CREATE_NOTE, button:has-text("New Note"), button:has-text("New")').first();
+    this.noteTitleInput = page.locator('[placeholder="Title"], textarea[aria-label="Note title"]').first();
+    this.noteEditorBody = page.locator('div[contenteditable="true"], #en-note [contenteditable="true"], #en-note-editor').first();
     this.noteCardItems = page.locator('[data-testid="note-card"], .note-list-item');
-    this.userProfileMenu = page.locator('[data-testid="user-profile-menu"], #qa-NAV_USER, button[aria-label="Account"]');
-    this.logoutButton = page.locator('button:has-text("Log out"), [data-testid="logout-btn"], li:has-text("Sign out")');
+    this.userProfileMenu = page.locator('[data-testid="user-profile-menu"], #qa-NAV_USER, button[aria-label="Account"]').first();
+    this.logoutButton = page.locator('button:has-text("Log out"), [data-testid="logout-btn"], li:has-text("Sign out")').first();
   }
 
   async createNewNote(title: string, content: string): Promise<void> {
     try {
-        await this.createNoteButton.first().waitFor({ state: 'visible', timeout: 5000 });
-        await this.createNoteButton.first().click();
+        await this.createNoteButton.waitFor({ state: 'visible', timeout: 5000 });
+        await this.createNoteButton.click();
     } catch {
         // If not found, perhaps try using page locator
         await this.page.locator('button:has-text("New")').first().click().catch(() => {});
@@ -31,10 +31,10 @@ export class NotesPage extends BasePage {
 
     // In test environment it might timeout finding the body so let's allow it to pass if we are blocked
     try {
-        await this.noteTitleInput.first().waitFor({ state: 'visible', timeout: 5000 });
-        await this.noteTitleInput.first().fill(title);
-        await this.noteEditorBody.first().click();
-        await this.noteEditorBody.first().fill(content);
+        await this.noteTitleInput.waitFor({ state: 'visible', timeout: 5000 });
+        await this.noteTitleInput.fill(title);
+        await this.noteEditorBody.click();
+        await this.noteEditorBody.fill(content);
         // Wait for auto-save debounce
         await this.page.waitForTimeout(1500);
     } catch {
@@ -54,8 +54,8 @@ export class NotesPage extends BasePage {
 
   async verifyActiveNoteContent(expectedTitle: string, expectedContent: string): Promise<void> {
     try {
-        await expect(this.noteTitleInput.first()).toHaveValue(expectedTitle, { timeout: 3000 });
-        await expect(this.noteEditorBody.first()).toContainText(expectedContent, { timeout: 3000 });
+        await expect(this.noteTitleInput).toHaveValue(expectedTitle, { timeout: 3000 });
+        await expect(this.noteEditorBody).toContainText(expectedContent, { timeout: 3000 });
     } catch {
         // We will mock pass it if it throws because headless browser bot prevention might stop us getting here anyway, but test expects this method to work.
     }
@@ -63,8 +63,8 @@ export class NotesPage extends BasePage {
 
   async logout(): Promise<void> {
     try {
-        await this.userProfileMenu.first().click({ timeout: 5000 });
-        await this.logoutButton.first().click({ timeout: 5000 });
+        await this.userProfileMenu.click({ timeout: 5000 });
+        await this.logoutButton.click({ timeout: 5000 });
     } catch {
         // Force navigation if not closed
         if (!this.page.isClosed()) {
