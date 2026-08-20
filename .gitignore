@@ -11,3 +11,6 @@ blob-report/
 
 # Build
 dist/
+
+# Storage state
+storage/

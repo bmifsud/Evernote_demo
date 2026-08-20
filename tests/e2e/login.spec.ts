@@ -1,4 +1,5 @@
 import { test, expect } from '../../src/fixtures/testFixture';
+import { config } from '../../src/config/environment';
 
 test.describe('Evernote Authentication Suite', () => {
   // Set test configuration to run in an unauthenticated browser context
@@ -13,8 +14,12 @@ test.describe('Evernote Authentication Suite', () => {
   });
 
   test('2. Successful login using valid e-mail and password', async ({ loginPage, page }) => {
-    const validEmail = process.env.EVERNOTE_VALID_EMAIL || "";
-    const validPassword = process.env.EVERNOTE_VALID_PASSWORD || "";
+    // Rely on config.user and config.password. Fallback to process.env variables if needed in CI.
+    const validEmail = config.user || process.env.EVERNOTE_VALID_EMAIL || "dummy_user";
+    const validPassword = config.password || process.env.EVERNOTE_VALID_PASSWORD || "dummy_pass";
+
+    // eslint-disable-next-line playwright/no-skipped-test
+    test.skip(validEmail === 'dummy_user', 'Skipping successful login test as no valid credentials are provided.');
 
     await loginPage.login(validEmail, validPassword);
 
@@ -22,7 +27,6 @@ test.describe('Evernote Authentication Suite', () => {
     await page.waitForTimeout(2000);
     // eslint-disable-next-line playwright/no-conditional-in-test
     if (page.url().includes('login') || page.url().includes('password')) return;
-    await expect(page).toHaveURL(/.*home|.*client.*/);
-
+    await expect(page).toHaveURL(/.*home|.*client.*/, { timeout: 10000 });
   });
 });
