@@ -26,6 +26,8 @@ test.describe('Evernote Note Lifecycle and Session Persistence', () => {
     // Log in and write a new note with dynamic timestamp data.
     await test.step('Log in and write a new note with dynamic timestamp data.', async () => {
       await loginPage.login(email, password);
+      // Wait to see if login succeeds before interacting with dashboard UI.
+      await page.waitForURL(/.*home|.*client.*/, { timeout: 30000 });
       await notesPage.createNewNote(dynamicTitle, dynamicContent);
     });
 
@@ -39,6 +41,8 @@ test.describe('Evernote Note Lifecycle and Session Persistence', () => {
     // Log back in, locate the created note by title, open it, and assert content persistence.
     await test.step('Log back in, locate the created note by title, open it, and assert content persistence.', async () => {
       await loginPage.login(email, password);
+      // Wait for login success again
+      await page.waitForURL(/.*home|.*client.*/, { timeout: 30000 });
       await notesPage.openNoteByTitle(dynamicTitle);
       await notesPage.verifyActiveNoteContent(dynamicTitle, dynamicContent);
     });

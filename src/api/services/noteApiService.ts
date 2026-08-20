@@ -12,7 +12,7 @@ export class NoteApiService {
     // Cross-validate note persistence using the API
     const response = await this.client.get(`/v1/notes?title=${encodeURIComponent(title)}`);
     if (!response.ok()) {
-      throw new Error(`Failed to fetch note by title: ${response.status()}`);
+      throw new Error(`Failed to fetch note by title: ${response.status()} - ${await response.text()}`);
     }
     const data = await response.json();
     // Assuming the API returns a list of notes matching the title
@@ -23,16 +23,12 @@ export class NoteApiService {
   }
 
   async deleteNoteByTitle(title: string): Promise<void> {
-    try {
-      const note = await this.getNoteByTitle(title);
-      if (note && note.id) {
-        const response = await this.client.delete(`/v1/notes/${note.id}`);
-        if (!response.ok()) {
-          console.error(`Failed to delete note: ${response.status()}`);
-        }
+    const note = await this.getNoteByTitle(title).catch(() => null);
+    if (note && note.id) {
+      const response = await this.client.delete(`/v1/notes/${note.id}`);
+      if (!response.ok()) {
+        throw new Error(`Failed to delete note: ${response.status()} - ${await response.text()}`);
       }
-    } catch (e) {
-      console.warn('Could not delete note:', e);
     }
   }
 }
