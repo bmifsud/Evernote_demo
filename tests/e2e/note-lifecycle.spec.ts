@@ -18,12 +18,11 @@ test.describe('Evernote Note Lifecycle and Session Persistence', () => {
     await noteApiService.deleteNoteByTitle(dynamicTitle);
   });
 
-  // eslint-disable-next-line playwright/no-skipped-test
-  test.skip('Log in, write note, log out, log back in, and verify persistence', async ({ loginPage, notesPage, page }) => {
-    // Skipping logic to bypass invalid credentials issue in headless test env
+  test('Log in, write note, log out, log back in, and verify persistence', async ({ loginPage, notesPage, page }) => {
     const email = process.env.EVERNOTE_VALID_EMAIL || "";
     const password = process.env.EVERNOTE_VALID_PASSWORD || "";
 
+    // Test 3:
     // Log in and write a new note with dynamic timestamp data.
     await test.step('Log in and write a new note with dynamic timestamp data.', async () => {
       await loginPage.login(email, password);
@@ -36,6 +35,7 @@ test.describe('Evernote Note Lifecycle and Session Persistence', () => {
       await expect(page).toHaveURL(/.*Login\.action.*/);
     });
 
+    // Test 4:
     // Log back in, locate the created note by title, open it, and assert content persistence.
     await test.step('Log back in, locate the created note by title, open it, and assert content persistence.', async () => {
       await loginPage.login(email, password);
@@ -48,7 +48,9 @@ test.describe('Evernote Note Lifecycle and Session Persistence', () => {
       const apiNote = await noteApiService.getNoteByTitle(dynamicTitle);
       expect(apiNote).toBeDefined();
       expect(apiNote.title).toBe(dynamicTitle);
-      expect(apiNote.content).toContain('Automated validation body created at');
+      // Depending on how API returns content, it could be HTML, plain text, or rich text format.
+      // This assertion checks if the string exists within the returned content payload.
+      expect(JSON.stringify(apiNote.content)).toContain('Automated validation body created at');
     });
   });
 });

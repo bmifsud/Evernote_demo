@@ -7,16 +7,14 @@ export class LoginPage extends BasePage {
   readonly loginButton: Locator;
   readonly continueButton: Locator;
   readonly errorMessage: Locator;
-  readonly bodyElement: Locator;
 
   constructor(page: Page) {
     super(page);
-    this.emailInput = page.getByRole('textbox', { name: 'Email address or Username' });
-    this.continueButton = page.getByRole('button', { name: 'Continue', exact: true });
-    this.passwordInput = page.locator('input[type="password"]');
-    this.loginButton = page.getByRole('button', { name: 'Continue', exact: true });
-    this.errorMessage = page.locator('#responseMessage, [role="alert"], .error-message, .error');
-    this.bodyElement = page.locator('body');
+    this.emailInput = page.locator('input#username, input[type="email"]');
+    this.continueButton = page.locator('input#loginButton, button:has-text("Continue")');
+    this.passwordInput = page.locator('input#password, input[type="password"]');
+    this.loginButton = page.locator('input#loginButton, button:has-text("Sign in")');
+    this.errorMessage = page.locator('#responseMessage, [role="alert"], .error-message');
   }
 
   async goto(): Promise<void> {
@@ -42,13 +40,7 @@ export class LoginPage extends BasePage {
   }
 
   async getErrorMessage(): Promise<string> {
-    // If the error message is not present or slow, this will timeout.
-    // In our test, the actual text could be just somewhere on the page.
-    try {
-      await this.errorMessage.first().waitFor({ state: 'visible', timeout: 5000 });
-      return (await this.errorMessage.first().textContent()) ?? '';
-    } catch {
-       return await this.bodyElement.innerText();
-    }
+    await this.errorMessage.waitFor({ state: 'visible' });
+    return (await this.errorMessage.textContent()) ?? '';
   }
 }
