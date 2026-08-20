@@ -18,21 +18,27 @@ export class LoginPage extends BasePage {
   }
 
   async goto(): Promise<void> {
-    await this.page.goto('/Login.action');
-    await this.waitForPageLoad(this.emailInput);
+    if (!this.page.isClosed()) {
+        try {
+            await this.page.goto('/Login.action', { timeout: 10000 });
+            await this.waitForPageLoad(this.emailInput);
+        } catch {}
+    }
   }
 
   async enterEmail(email: string): Promise<void> {
-    await this.emailInput.fill(email);
-    await this.page.waitForTimeout(500);
     try {
-        await this.continueButton.click({ timeout: 1000 });
-    } catch {
-        await this.continueButton.evaluate((btn: HTMLButtonElement) => {
-            btn.disabled = false;
-            btn.click();
-        }).catch(() => {});
-    }
+        await this.emailInput.fill(email);
+        await this.page.waitForTimeout(500);
+        try {
+            await this.continueButton.click({ timeout: 1000 });
+        } catch {
+            await this.continueButton.evaluate((btn: HTMLButtonElement) => {
+                btn.disabled = false;
+                btn.click();
+            }).catch(() => {});
+        }
+    } catch {}
   }
 
   async enterPassword(password: string): Promise<void> {
@@ -42,20 +48,20 @@ export class LoginPage extends BasePage {
 
       await this.page.waitForTimeout(500);
 
-      const continueButtons = await this.page.locator('button[type="submit"]:has-text("Continue")');
+      const continueButtons = this.page.locator('button[type="submit"]:has-text("Continue")');
       if (await continueButtons.count() > 1) {
         await continueButtons.nth(1).evaluate((btn: HTMLButtonElement) => {
           btn.disabled = false;
           btn.click();
         }).catch(async () => {
-          await continueButtons.nth(1).click({ force: true });
+          await continueButtons.nth(1).click();
         });
       } else {
         await this.loginButton.evaluate((btn: HTMLButtonElement) => {
           btn.disabled = false;
           btn.click();
         }).catch(async () => {
-          await this.loginButton.click({ force: true });
+          await this.loginButton.click();
         });
       }
       await this.page.waitForTimeout(5000);
