@@ -1,4 +1,5 @@
 import { test, expect } from '../../src/fixtures/testFixture';
+import { config } from '../../src/config/environment';
 
 test.describe('Evernote Authentication Suite', () => {
   test('1. Unsuccessful login using invalid e-mail format / non-existent credentials', async ({ loginPage }) => {
@@ -14,11 +15,11 @@ test.describe('Evernote Authentication Suite', () => {
   });
 
   test('2. Successful login using valid e-mail and password', async ({ loginPage, page }) => {
-    const validEmail = process.env.EVERNOTE_VALID_EMAIL || "";
-    const validPassword = process.env.EVERNOTE_VALID_PASSWORD || "";
+    const validEmail = config.user || process.env.EVERNOTE_VALID_EMAIL || "dummy_user";
+    const validPassword = config.password || process.env.EVERNOTE_VALID_PASSWORD || "dummy_pass";
 
     // eslint-disable-next-line playwright/no-skipped-test
-    test.skip(!validEmail || !validPassword, 'No valid credentials provided, skipping successful login test to avoid captcha block.');
+    test.skip(validEmail === 'dummy_user' || !validPassword, 'Skipping successful login test as no valid credentials are provided.');
 
     await loginPage.login(validEmail, validPassword);
 

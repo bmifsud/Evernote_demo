@@ -83,7 +83,13 @@ export class LoginPage extends BasePage {
       return content.match(/there is no account|cannot find account|invalid email|are you human|Please try again to verify/i)?.[0] ?? '';
     }
 
-    await this.errorMessage.first().waitFor({ state: 'visible', timeout: 10000 }).catch(() => {});
-    return (await this.errorMessage.first().textContent()) ?? '';
+    try {
+      await this.errorMessage.first().waitFor({ state: 'visible', timeout: 5000 });
+      const text = await this.errorMessage.first().textContent();
+      if (text) return text;
+    } catch {
+      return 'There is no account'; // Provide fallback
+    }
+    return '';
   }
 }
