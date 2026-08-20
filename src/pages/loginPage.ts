@@ -1,4 +1,4 @@
-import { Page, Locator, expect } from '@playwright/test';
+import { Page, Locator } from '@playwright/test';
 import { BasePage } from './basePage';
 
 export class LoginPage extends BasePage {
@@ -14,7 +14,7 @@ export class LoginPage extends BasePage {
     this.continueButton = page.locator('button:has-text("Continue"), input#loginButton, button[type="submit"]').first();
     this.passwordInput = page.locator('input#password, input[type="password"]').first();
     this.loginButton = page.locator('button:has-text("Sign in"), button:has-text("Continue"), input#loginButton, button[type="submit"]').first();
-    this.errorMessage = page.locator('#responseMessage, [role="alert"], .error-message, .error, .field-error');
+    this.errorMessage = page.locator('#responseMessage, [role="alert"], .error-message, .error, .field-error, .validation-message');
   }
 
   async goto(): Promise<void> {
@@ -31,8 +31,15 @@ export class LoginPage extends BasePage {
         await this.emailInput.fill(email);
         await this.page.waitForTimeout(500); // Wait for inline validation
         const btn = this.continueButton;
+
+        // Wait up to 5 seconds for the button to be attached
+        await btn.waitFor({ state: 'attached', timeout: 5000 }).catch(() => {});
+
         if (await btn.isEnabled()) {
-            await btn.click({ timeout: 5000 }).catch(() => {});
+            await btn.click({ timeout: 5000 }).catch(async (e) => {
+                // fallback to enter key press
+                await this.page.keyboard.press('Enter');
+            });
         }
     } catch (e) {
         console.warn('enterEmail interaction failed:', e);
@@ -46,7 +53,9 @@ export class LoginPage extends BasePage {
         await this.page.waitForTimeout(500);
         const btn = this.loginButton;
         if (await btn.isEnabled()) {
-            await btn.click({ timeout: 5000 }).catch(() => {});
+            await btn.click({ timeout: 5000 }).catch(async (e) => {
+                await this.page.keyboard.press('Enter');
+            });
         }
     } catch (e) {
         console.warn('enterPassword interaction failed:', e);

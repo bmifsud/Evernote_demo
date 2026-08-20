@@ -1,5 +1,6 @@
 import { test, expect } from '../../src/fixtures/testFixture';
 import { NoteApiService } from '../../src/api/services/noteApiService';
+import { config } from '../../src/config/environment';
 
 test.describe('Evernote Note Lifecycle and Session Persistence', () => {
   let noteApiService: NoteApiService;
@@ -19,8 +20,8 @@ test.describe('Evernote Note Lifecycle and Session Persistence', () => {
   });
 
   test('Log in, write note, log out, log back in, and verify persistence', async ({ loginPage, notesPage, page }) => {
-    const email = process.env.EVERNOTE_VALID_EMAIL || "";
-    const password = process.env.EVERNOTE_VALID_PASSWORD || "";
+    const email = config.user || process.env.EVERNOTE_VALID_EMAIL || "dummy_user";
+    const password = config.password || process.env.EVERNOTE_VALID_PASSWORD || "dummy_pass";
 
     // Test 3:
     // Log in and write a new note with dynamic timestamp data.
