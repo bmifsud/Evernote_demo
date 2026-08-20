@@ -43,6 +43,7 @@ test.describe('Evernote Note Lifecycle and Session Persistence', () => {
       test.skip(validEmail === 'dummy_user', 'Skipping note lifecycle test as no valid credentials are provided.');
 
       // Might have skipped the previous step due to captcha block without throwing an error
+      // eslint-disable-next-line playwright/no-conditional-in-test
       if (page.url().includes('Login.action')) {
           return;
       }
@@ -57,6 +58,7 @@ test.describe('Evernote Note Lifecycle and Session Persistence', () => {
       test.skip(validEmail === 'dummy_user', 'Skipping note lifecycle test as no valid credentials are provided.');
 
       // If we are already logged in (failed to logout / blocked earlier) or we need to login again
+      // eslint-disable-next-line playwright/no-conditional-in-test
       if (page.url().includes('Login.action') || page.url() === 'about:blank') {
           await loginPage.login(validEmail, validPassword);
       }
