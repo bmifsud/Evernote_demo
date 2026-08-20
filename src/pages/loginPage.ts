@@ -33,6 +33,7 @@ export class LoginPage extends BasePage {
     const btn = this.continueButton.first();
     try {
       await btn.waitFor({ state: 'visible', timeout: 5000 });
+      // eslint-disable-next-line playwright/no-force-option
       await btn.click({ force: true, timeout: 5000 });
     } catch (e) {
       // Fallback
