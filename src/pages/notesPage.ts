@@ -11,7 +11,6 @@ export class NotesPage extends BasePage {
 
   constructor(page: Page) {
     super(page);
-    // Expand locators for new note button
     this.createNoteButton = page.locator('[data-testid="sidebar-new-note-btn"], button#qa-CREATE_NOTE, button:has-text("New Note"), button:has-text("New")');
     this.noteTitleInput = page.locator('[placeholder="Title"], textarea[aria-label="Note title"]');
     this.noteEditorBody = page.locator('div[contenteditable="true"], #en-note [contenteditable="true"], #en-note-editor');

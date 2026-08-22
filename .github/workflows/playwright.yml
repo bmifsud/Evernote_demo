@@ -14,6 +14,7 @@ jobs:
     runs-on: ubuntu-latest
 
     env:
+      ACTIONS_ALLOW_USE_UNSECURE_NODE_VERSION: true
       BASE_URL: ${{ secrets.BASE_URL }}
       EVERNOTE_VALID_EMAIL: ${{ secrets.EVERNOTE_VALID_EMAIL }}
       EVERNOTE_VALID_PASSWORD: ${{ secrets.EVERNOTE_VALID_PASSWORD }}
@@ -36,6 +37,7 @@ jobs:
 
       - name: Execute Playwright Tests
         run: npx playwright test
+
 
       - name: Upload Playwright Test Report
         uses: actions/upload-artifact@v4

@@ -23,12 +23,31 @@ export default defineConfig({
   },
   projects: [
     {
+      name: 'auth.setup',
+      testMatch: 'auth.setup.ts',
+    },
+    {
       name: 'chromium',
-      use: { ...devices['Desktop Chrome'] },
+      use: {
+        ...devices['Desktop Chrome'],
+        storageState: 'storage/.auth/user.json',
+      },
+      dependencies: ['auth.setup'],
     },
     {
       name: 'firefox',
-      use: { ...devices['Desktop Firefox'] },
+      use: {
+        ...devices['Desktop Firefox'],
+        storageState: 'storage/.auth/user.json',
+      },
+      dependencies: ['auth.setup'],
     },
+    {
+      name: 'unauthenticated',
+      testMatch: '**/login.spec.ts',
+      use: {
+        ...devices['Desktop Chrome'],
+      },
+    }
   ],
 });
